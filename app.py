@@ -46,7 +46,7 @@ class RequestSchema(ma.Schema):
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ("username", "password")
+        fields = ("id", "username", "password")
 
 
 request_schema = RequestSchema()
@@ -61,6 +61,12 @@ def get_requests():
     result = requests_schema.dump(all_requests)
     return jsonify(result)
 
+@app.route("/users", methods=["GET"])
+def get_users():
+    all_users = Users.query.all()
+    user = users_schema.dump(all_users)
+    return jsonify(user)
+
 @app.route("/request", methods=["POST"])
 def add_request():
     name = request.json["name"]
@@ -74,6 +80,18 @@ def add_request():
 
     created_request = Request.query.get(new_request.id)
     return request_schema.jsonify(created_request)
+
+@app.route("/user", methods=["POST"])
+def add_user():
+    username = request.json["username"]
+    password = request.json["password"]
+
+    new_user = Users(username, password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    created_user = Users.query.get(new_user.id)
+    return user_schema.jsonify(created_user)
 
 @app.route("/request/<id>", methods=["PATCH"])
 def update_request(id):
@@ -94,6 +112,14 @@ def delete_request(id):
     db.session.commit()
 
     return "REQUEST DELETED"
+
+@app.route("/user/<id>", methods=["DELETE"])
+def delete_user(id):
+    user = Users.query.get(id)
+    db.session.delete(user)
+    db.session.commit()
+
+    return "USER DELETED"
 
 
 if __name__ == "__main__":
