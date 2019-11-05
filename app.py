@@ -24,20 +24,35 @@ class Request(db.Model):
     message = db.Column(db.String(400))
     done = db.Column(db.Boolean)
 
-    def __init__(self, name, company, email, message, done):
+    def __init__(self, name, company, email, message):
         self.name = name
         self.company = company
         self.email = email
         self.message = message
-        self.done = done
+
+class Users(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key = True)
+    username = db.Column(db.String(100))
+    password = db.Column(db.String(20))
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
 
 class RequestSchema(ma.Schema):
     class Meta:
-        fields = ("id", "name", "company", "email", "message", "done")
+        fields = ("id", "name", "company", "email", "message")
+
+class UserSchema(ma.Schema):
+    class Meta:
+        fields = ("username", "password")
 
 
 request_schema = RequestSchema()
 requests_schema = RequestSchema(many=True)
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
 
 
 @app.route("/requests", methods=["GET"])
@@ -52,9 +67,8 @@ def add_request():
     company = request.json["company"]
     email = request.json["email"]
     message = request.json["message"]
-    done = request.json["done"]
 
-    new_request = Request(name, company, email, message, done)
+    new_request = Request(name, company, email, message)
     db.session.add(new_request)
     db.session.commit()
 
@@ -69,7 +83,6 @@ def update_request(id):
     record.company = request.json["company"]
     record.email = request.json["email"]
     record.message = request.json["message"]
-    record.done = request.json["done"]
 
     db.session.commit()
     return request_schema.jsonify(record)
