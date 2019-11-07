@@ -1,13 +1,9 @@
-import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_heroku import Heroku
-from dotenv import load_dotenv
-load_dotenv()
 
-api_key = os.getenv(API_KEY)
 
 app = Flask(__name__)
 
@@ -124,19 +120,6 @@ def delete_user(id):
     db.session.commit()
 
     return "USER DELETED"
-
-@app.route("/mailer", methods=["POST"])
-def send_email(sent_from):
-    sent_from = request.json["sent_from"]
-
-
-    return requests.post(
-	"https://api.mailgun.net/v3/sandboxa406895a820248c3a4d0dea031b4231f.mailgun.org/messages",
-	auth=("api", API_KEY),
-	data={"from": f"{sent_from}",
-		"to": ["oswaldogutierrez218@gmail.com", "sandboxa406895a820248c3a4d0dea031b4231f.mailgun.org"],
-		"subject": "Sent From Request",
-		"text": "1 New Request"})
 
 
 if __name__ == "__main__":
