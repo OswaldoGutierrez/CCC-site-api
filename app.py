@@ -84,6 +84,12 @@ def get_users():
     user = users_schema.dump(all_users)
     return jsonify(user)
 
+@app.route("/reviews", methods=["GET"])
+def get_reviews():
+    all_reviews = Reviews.query.all()
+    review = reviews_schema.dump(all_reviews)
+    return jsonify(review)
+
 @app.route("/request", methods=["POST"])
 def add_request():
     name = request.json["name"]
@@ -109,6 +115,19 @@ def add_user():
 
     created_user = Users.query.get(new_user.id)
     return user_schema.jsonify(created_user)
+
+@app.route("/review", methods=["POST"])
+def add_review():
+    name = request.json["name"]
+    rating = request.json["rating"]
+    comment = request.json["comment"]
+
+    new_review = Reviews(name, rating, comment)
+    db.session.add(new_review)
+    db.session.commit()
+
+    created_review = Reviews.query.get(new_review.id)
+    return review_schema.jsonify(created_review)
 
 @app.route("/request/<id>", methods=["PATCH"])
 def update_request(id):
