@@ -22,7 +22,6 @@ class Request(db.Model):
     company = db.Column(db.String(150))
     email = db.Column(db.String(100))
     message = db.Column(db.String(400))
-    done = db.Column(db.Boolean)
 
     def __init__(self, name, company, email, message):
         self.name = name
@@ -122,17 +121,18 @@ def delete_user(id):
     return "USER DELETED"
 
 @app.route("/mailer", methods=["POST"])
-def send_email(sent_from, meassage):
+def send_email(sent_from):
     sent_from = request.json["sent_from"]
 
 
-    	return requests.post(
-		"https://api.mailgun.net/v3/sandboxa406895a820248c3a4d0dea031b4231f.mailgun.org/messages",
-		auth=("api", "6dadd9f35f072cf9b428415fc26404e8-f696beb4-caf3df00"),
-		data={"from": f"{sent_from}",
-			"to": ["oswaldogutierrez218@gmail.com", "sandboxa406895a820248c3a4d0dea031b4231f.mailgun.org"],
-			"subject": "Sent From Request",
-			"text": f"{message}"})
+    return requests.post(
+	"https://api.mailgun.net/v3/sandboxa406895a820248c3a4d0dea031b4231f.mailgun.org/messages",
+	auth=("api", "6dadd9f35f072cf9b428415fc26404e8-f696beb4-caf3df00"),
+	data={"from": f"{sent_from}",
+		"to": ["oswaldogutierrez218@gmail.com", "sandboxa406895a820248c3a4d0dea031b4231f.mailgun.org"],
+		"subject": "Sent From Request",
+		"text": "1 New Request"})
+
 
 if __name__ == "__main__":
     app.debug = True
