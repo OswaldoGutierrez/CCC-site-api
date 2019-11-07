@@ -40,6 +40,18 @@ class Users(db.Model):
         self.username = username
         self.password = password
 
+class Reviews(db.Model):
+    __tablename__ = "reviews"
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(50))
+    rating = db.Column(db.String(20))
+    comment = db.Column(db.String(150))
+
+    def __init__(self, name, rating, comment):
+        self.name = name
+        self.rating = rating
+        self.comment = comment
+
 class RequestSchema(ma.Schema):
     class Meta:
         fields = ("id", "name", "company", "email", "message")
@@ -48,11 +60,16 @@ class UserSchema(ma.Schema):
     class Meta:
         fields = ("id", "username", "password")
 
+class ReviewSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "name", "rating", "comment")
 
 request_schema = RequestSchema()
 requests_schema = RequestSchema(many=True)
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+review_schema = ReviewSchema()
+reviews_schema = ReviewSchema(many=True)
 
 
 @app.route("/requests", methods=["GET"])
