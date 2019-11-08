@@ -141,6 +141,17 @@ def update_request(id):
     db.session.commit()
     return request_schema.jsonify(record)
 
+@app.route("/review/<id>", methods=["PATCH"])
+def update_review(id):
+    review = Review.query.get(id)
+
+    review.name = request.json["name"]
+    review.rating = request.json["rating"]
+    review.comment = request.json["comment"]
+
+    db.session.commit()
+    return review_schema.jsonify(review)
+
 @app.route("/request/<id>", methods=["DELETE"])
 def delete_request(id):
     request = Request.query.get(id)
@@ -156,6 +167,14 @@ def delete_user(id):
     db.session.commit()
 
     return "USER DELETED"
+
+@app.route("/review/<id>", methods=["DELETE"])
+def delete_review(id):
+    review = Review.query.get(id)
+    db.session.delete(review)
+    db.session.commit()
+
+    return "REVIEW DELETED"
 
 
 if __name__ == "__main__":
