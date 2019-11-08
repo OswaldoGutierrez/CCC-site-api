@@ -170,7 +170,7 @@ def delete_user(id):
 
 @app.route("/review/<id>", methods=["DELETE"])
 def delete_review(id):
-    review = Review.query.get(id)
+    review = Reviews.query.get(id)
     db.session.delete(review)
     db.session.commit()
 
